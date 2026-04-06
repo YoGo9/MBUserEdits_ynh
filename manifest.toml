@@ -19,6 +19,9 @@ architectures = "all"
 multi_instance = false
 ldap = "not_relevant"
 sso = "not_relevant"
+disk = "200M"
+ram.build = "200M"
+ram.runtime = "100M"
 
 [install]
 
