@@ -1,0 +1,62 @@
+#!/bin/bash
+source _common.sh
+source /usr/share/yunohost/helpers
+
+#=================================================
+# DOWNLOAD SOURCE
+#=================================================
+ynh_print_info "Downloading app sources..."
+ynh_setup_source --dest_dir="$install_dir"
+
+#=================================================
+# NODE.JS
+#=================================================
+ynh_print_info "Checking Node.js..."
+install_nodejs
+
+#=================================================
+# INSTALL NODE DEPENDENCIES
+#=================================================
+ynh_print_info "Installing Node.js dependencies..."
+install_node_deps
+
+#=================================================
+# WRITE .env
+#=================================================
+ynh_print_info "Writing configuration..."
+ynh_config_add --template="app.env" --destination="$install_dir/.env"
+chmod 600 "$install_dir/.env"
+chown "$app:$app" "$install_dir/.env"
+
+#=================================================
+# RUN DATABASE MIGRATIONS
+#=================================================
+ynh_print_info "Running database migrations..."
+pushd "$install_dir"
+    sudo -u "$app" node src/db/migrate.js
+popd
+
+#=================================================
+# SET PERMISSIONS
+#=================================================
+chown -R "$app:$app" "$install_dir"
+chown -R "$app:$app" "$data_dir"
+chmod 750 "$data_dir"
+
+#=================================================
+# NGINX + SYSTEMD
+#=================================================
+ynh_print_info "Configuring nginx..."
+ynh_config_add_nginx
+
+ynh_print_info "Configuring systemd service..."
+ynh_config_add_systemd
+
+#=================================================
+# START
+#=================================================
+ynh_print_info "Starting MBUserEdits..."
+ynh_systemctl --service="$app" --action="enable"
+ynh_systemctl --service="$app" --action="start" --wait_until="Listening on"
+
+ynh_print_info "Installation complete!"

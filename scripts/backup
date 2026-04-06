@@ -1,0 +1,13 @@
+#!/bin/bash
+source _common.sh
+source /usr/share/yunohost/helpers
+
+ynh_print_info "Backing up app files..."
+ynh_backup "$install_dir"
+
+ynh_print_info "Backing up data directory..."
+ynh_backup "$data_dir"
+
+# PostgreSQL DB is backed up automatically by the database resource
+
+ynh_print_info "Backup complete!"

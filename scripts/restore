@@ -1,0 +1,25 @@
+#!/bin/bash
+source _common.sh
+source /usr/share/yunohost/helpers
+
+ynh_print_info "Restoring app files..."
+ynh_restore "$install_dir"
+
+ynh_print_info "Restoring data directory..."
+ynh_restore "$data_dir"
+
+install_nodejs
+install_node_deps
+
+chown -R "$app:$app" "$install_dir"
+chown -R "$app:$app" "$data_dir"
+
+# PostgreSQL DB is restored automatically by the database resource
+
+ynh_config_add_nginx
+ynh_config_add_systemd
+
+ynh_systemctl --service="$app" --action="enable"
+ynh_systemctl --service="$app" --action="start" --wait_until="Listening on"
+
+ynh_print_info "Restore complete!"

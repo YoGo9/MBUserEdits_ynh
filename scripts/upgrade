@@ -1,0 +1,54 @@
+#!/bin/bash
+source _common.sh
+source /usr/share/yunohost/helpers
+
+ynh_print_info "Stopping service for upgrade..."
+ynh_systemctl --service="$app" --action="stop"
+
+#=================================================
+# DOWNLOAD NEW SOURCE
+#=================================================
+ynh_print_info "Updating sources..."
+ynh_setup_source --dest_dir="$install_dir" --full_replace
+
+#=================================================
+# NODE.JS + DEPS
+#=================================================
+install_nodejs
+install_node_deps
+
+#=================================================
+# UPDATE .env (preserves saved settings)
+#=================================================
+ynh_print_info "Updating configuration..."
+ynh_config_add --template="app.env" --destination="$install_dir/.env"
+chmod 600 "$install_dir/.env"
+chown "$app:$app" "$install_dir/.env"
+
+#=================================================
+# RUN MIGRATIONS (safe to re-run)
+#=================================================
+ynh_print_info "Running database migrations..."
+pushd "$install_dir"
+    sudo -u "$app" node src/db/migrate.js
+popd
+
+#=================================================
+# PERMISSIONS
+#=================================================
+chown -R "$app:$app" "$install_dir"
+chown -R "$app:$app" "$data_dir"
+
+#=================================================
+# NGINX + SYSTEMD
+#=================================================
+ynh_config_add_nginx
+ynh_config_add_systemd
+
+#=================================================
+# RESTART
+#=================================================
+ynh_print_info "Restarting service..."
+ynh_systemctl --service="$app" --action="restart" --wait_until="Listening on"
+
+ynh_print_info "Upgrade complete!"

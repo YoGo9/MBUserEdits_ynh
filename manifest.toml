@@ -1,0 +1,71 @@
+packaging_format = 2
+
+id = "mbuseredited"
+name = "MBUserEdits"
+description.en = "Self-hosted MusicBrainz editor statistics dashboard with trend tracking"
+
+version = "1.0~ynh1"
+
+maintainers = ["YoGo9"]
+
+[upstream]
+license = "MIT"
+code = "https://github.com/YoGo9/MBUserEdits"
+
+[integration]
+yunohost = ">= 11.1"
+helpers_version = "2.1"
+architectures = "all"
+multi_instance = false
+ldap = "not_relevant"
+sso = "not_relevant"
+
+[install]
+
+[install.domain]
+type = "domain"
+
+[install.path]
+type = "path"
+default = "/"
+
+[install.init_main_permission]
+type = "group"
+default = "visitors"
+
+[install.mb_username]
+ask.en = "MusicBrainz username to track"
+type = "string"
+example = "YoGo"
+
+[install.scrape_cron]
+ask.en = "Scrape schedule as a cron expression"
+type = "string"
+default = "*/10 * * * *"
+help.en = "Standard cron syntax. Examples: '*/10 * * * *' = every 10 min, '0 * * * *' = every hour"
+
+[resources]
+
+[resources.sources.main]
+url = "https://github.com/YoGo9/MBUserEdits/archive/refs/tags/v1.0.0.tar.gz"
+sha256 = "d5bb8e002823d356491bd5e8eab799f901c8d99b2260ef21c06fae6c152cc914"
+in_subdir = true
+
+[resources.system_user]
+
+[resources.install_dir]
+
+[resources.data_dir]
+
+[resources.ports]
+main.default = 3456
+
+[resources.permissions]
+main.url = "/"
+main.allowed = "visitors"
+
+[resources.apt]
+packages = "nodejs, npm"
+
+[resources.database]
+type = "postgresql"
