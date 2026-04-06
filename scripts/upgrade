@@ -49,6 +49,6 @@ ynh_config_add_systemd
 # RESTART
 #=================================================
 ynh_print_info "Restarting service..."
-ynh_systemctl --service="$app" --action="restart" --wait_until="Listening on"
+ynh_systemctl --service="$app" --action="restart" --wait_until="Listening on" --log_path="systemd"
 
 ynh_print_info "Upgrade complete!"
