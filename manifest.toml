@@ -50,8 +50,8 @@ help.en = "Standard cron syntax. Examples: '*/10 * * * *' = every 10 min, '0 * *
 [resources]
 
 [resources.sources.main]
-url = "https://github.com/YoGo9/MBUserEdits/archive/refs/tags/v1.0.0.tar.gz"
-sha256 = "d5bb8e002823d356491bd5e8eab799f901c8d99b2260ef21c06fae6c152cc914"
+url = "https://github.com/YoGo9/MBUserEdits/archive/refs/tags/v1.0.1.tar.gz"
+sha256 = "4d12a5677e0dbf799620ad1a9f3bedbeb97402e39206b7a432312e8319705d11"
 in_subdir = true
 
 [resources.system_user]
