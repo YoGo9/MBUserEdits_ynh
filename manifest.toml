@@ -68,7 +68,7 @@ main.url = "/"
 main.allowed = "visitors"
 
 [resources.apt]
-packages = "nodejs, npm"
+packages = "nodejs, npm, postgresql, postgresql-contrib"
 
 [resources.database]
 type = "postgresql"
